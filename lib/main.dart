@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
-import 'booking_screen.dart';
-import 'trip_list_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'providers/booking_provider.dart';
+import 'screens/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => BookingProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -12,55 +21,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Đặt vé xe',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Đặt vé xe'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Xin chào quý khách!',
-              style: TextStyle(fontSize: 24),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BookingScreen()),
-                );
-              },
-              child: const Text('Đặt vé'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const TripListScreen()),
-                );
-              },
-              child: const Text('Kiểm tra vé'),
-            ),
-          ],
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      title: 'Ứng dụng đặt vé',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const HomeScreen(),
     );
   }
 }

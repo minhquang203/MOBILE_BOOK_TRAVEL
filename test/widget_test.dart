@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_book_travel/main.dart';
-import 'package:mobile_book_travel/booking_screen.dart';
-import 'package:mobile_book_travel/trip_list_screen.dart';
 
 void main() {
   testWidgets('Navigates to BookingScreen', (WidgetTester tester) async {

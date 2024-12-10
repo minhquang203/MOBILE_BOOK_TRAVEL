@@ -4,7 +4,11 @@ class TripDetailScreen extends StatelessWidget {
   final String tripName;
   final String tripDetails;
 
-  const TripDetailScreen({Key? key, required this.tripName, required this.tripDetails}) : super(key: key);
+  const TripDetailScreen({
+    Key? key,
+    required this.tripName,
+    required this.tripDetails,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +23,13 @@ class TripDetailScreen extends StatelessWidget {
           children: <Widget>[
             Text(
               tripName,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Text(
               tripDetails,
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
-            // Thêm các thông tin chi tiết khác ở đây.
           ],
         ),
       ),
