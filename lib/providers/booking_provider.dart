@@ -15,6 +15,7 @@ class BookingProvider with ChangeNotifier {
 
   List<Map<String, String>> get bookings => _bookings;
 
+  // Thêm vé mới
   void addBooking(
       String origin, String destination, String date, int passengers) {
     _bookings.add({
@@ -26,11 +27,13 @@ class BookingProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Xóa vé
   void removeBooking(int index) {
     _bookings.removeAt(index);
     notifyListeners();
   }
 
+  // Cập nhật vé
   void updateBooking(int index, String origin, String destination, String date,
       int passengers) {
     _bookings[index] = {

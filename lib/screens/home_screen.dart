@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // Danh sách các màn hình tương ứng với các tab
   static const List<Widget> _widgetOptions = <Widget>[
     HomeContent(), // Màn hình chính
-    TicketInfoScreen(), // Màn hình thông tin vé
+    TicketInfoScreen(bookings: []), // Màn hình thông tin vé
     ProfileScreen(), // Màn hình cá nhân
     SettingsScreen(), // Màn hình cài đặt
   ];
