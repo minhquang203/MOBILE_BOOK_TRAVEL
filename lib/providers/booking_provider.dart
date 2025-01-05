@@ -15,8 +15,28 @@ class BookingProvider with ChangeNotifier {
 
   List<Map<String, String>> get bookings => _bookings;
 
-  void addBooking(String destination, String date) {
-    _bookings.add({'destination': destination, 'date': date});
+  void addBooking(String origin, String destination, String date, int passengers) {
+    _bookings.add({
+      'origin': origin,
+      'destination': destination,
+      'date': date,
+      'passengers': passengers.toString(), // Thêm số lượng hành khách
+    });
+    notifyListeners();
+  }
+
+  void removeBooking(int index) {
+    _bookings.removeAt(index);
+    notifyListeners();
+  }
+
+  void updateBooking(int index, String origin, String destination, String date, int passengers) {
+    _bookings[index] = {
+      'origin': origin,
+      'destination': destination,
+      'date': date,
+      'passengers': passengers.toString(), // Cập nhật số lượng hành khách
+    };
     notifyListeners();
   }
 }

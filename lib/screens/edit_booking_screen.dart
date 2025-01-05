@@ -1,30 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Thêm import này
-import '../providers/booking_provider.dart'; // Thêm import này
+import 'package:provider/provider.dart';
 
-class BookingScreen extends StatefulWidget {
-  const BookingScreen({Key? key}) : super(key: key);
+import '../providers/booking_provider.dart';
+
+class EditBookingScreen extends StatefulWidget {
+  final int index;
+  final String initialOrigin;
+  final String initialDestination;
+  final String initialDate;
+  final int initialPassengers; // Thêm số lượng hành khách ban đầu
+
+  const EditBookingScreen({
+    Key? key,
+    required this.index,
+    required this.initialOrigin,
+    required this.initialDestination,
+    required this.initialDate,
+    required this.initialPassengers, // Thêm số lượng hành khách ban đầu
+  }) : super(key: key);
 
   @override
-  _BookingScreenState createState() => _BookingScreenState();
+  _EditBookingScreenState createState() => _EditBookingScreenState();
 }
 
-class _BookingScreenState extends State<BookingScreen> {
-  String? _selectedOrigin;
-  String? _selectedDestination;
-  final TextEditingController _departureDateController = TextEditingController();
-  final TextEditingController _returnDateController = TextEditingController();
-  int _passengers = 1;
+class _EditBookingScreenState extends State<EditBookingScreen> {
+  late String _selectedOrigin;
+  late String _selectedDestination;
+  final TextEditingController _dateController = TextEditingController();
+  int _passengers = 1; // Thêm biến số lượng hành khách
 
-  final List<String> _cities = [
-    'Hà Nội (HAN)',
-    'Hồ Chí Minh (SGN)',
-    'Đà Nẵng (DAD)',
-    'Nha Trang (CXR)',
-    'Phú Quốc (PQC)',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _selectedOrigin = widget.initialOrigin;
+    _selectedDestination = widget.initialDestination;
+    _dateController.text = widget.initialDate;
+    _passengers = widget.initialPassengers; // Khởi tạo số lượng hành khách
+  }
 
-  Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -33,69 +47,59 @@ class _BookingScreenState extends State<BookingScreen> {
     );
     if (pickedDate != null) {
       setState(() {
-        controller.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+        _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bookingProvider = Provider.of<BookingProvider>(context); // Lấy BookingProvider
+    final destinations = Provider.of<BookingProvider>(context).destinations;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đặt vé máy bay'),
+        title: const Text('Chỉnh sửa vé'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Biểu tượng máy bay ở đầu màn hình
-            Center(
-              child: Icon(
-                Icons.airplanemode_active,
-                color: Colors.blue,
-                size: 60,
-              ),
-            ),
-            const SizedBox(height: 20),
-
             // Chọn điểm đi
-            const Text('Điểm đi:', style: TextStyle(fontSize: 16)),
+            const Text('Chọn điểm đi:', style: TextStyle(fontSize: 16)),
             DropdownButton<String>(
               value: _selectedOrigin,
               hint: const Text('Chọn điểm đi'),
               isExpanded: true,
-              items: _cities.map((String city) {
+              items: destinations.map((String destination) {
                 return DropdownMenuItem<String>(
-                  value: city,
-                  child: Text(city),
+                  value: destination,
+                  child: Text(destination),
                 );
               }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedOrigin = newValue;
+                  _selectedOrigin = newValue!;
                 });
               },
             ),
             const SizedBox(height: 20),
 
             // Chọn điểm đến
-            const Text('Điểm đến:', style: TextStyle(fontSize: 16)),
+            const Text('Chọn điểm đến:', style: TextStyle(fontSize: 16)),
             DropdownButton<String>(
               value: _selectedDestination,
               hint: const Text('Chọn điểm đến'),
               isExpanded: true,
-              items: _cities.map((String city) {
+              items: destinations.map((String destination) {
                 return DropdownMenuItem<String>(
-                  value: city,
-                  child: Text(city),
+                  value: destination,
+                  child: Text(destination),
                 );
               }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedDestination = newValue;
+                  _selectedDestination = newValue!;
                 });
               },
             ),
@@ -104,7 +108,7 @@ class _BookingScreenState extends State<BookingScreen> {
             // Chọn ngày khởi hành
             const Text('Ngày khởi hành:', style: TextStyle(fontSize: 16)),
             TextField(
-              controller: _departureDateController,
+              controller: _dateController,
               readOnly: true,
               decoration: const InputDecoration(
                 labelText: 'Chọn ngày',
@@ -112,23 +116,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 suffixIcon: Icon(Icons.calendar_today),
               ),
               onTap: () {
-                _selectDate(context, _departureDateController);
-              },
-            ),
-            const SizedBox(height: 20),
-
-            // Chọn ngày về (nếu là vé khứ hồi)
-            const Text('Ngày về (nếu có):', style: TextStyle(fontSize: 16)),
-            TextField(
-              controller: _returnDateController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                labelText: 'Chọn ngày',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.calendar_today),
-              ),
-              onTap: () {
-                _selectDate(context, _returnDateController);
+                _selectDate(context);
               },
             ),
             const SizedBox(height: 20),
@@ -158,33 +146,39 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Nút Đặt vé
+            // Nút Cập nhật vé
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  if (_selectedOrigin == null || _selectedDestination == null || _departureDateController.text.isEmpty) {
+                  if (_selectedOrigin.isEmpty ||
+                      _selectedDestination.isEmpty ||
+                      _dateController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+                      const SnackBar(
+                        content: Text('Vui lòng nhập đầy đủ thông tin'),
+                      ),
                     );
                   } else {
-                    // Lưu thông tin đặt vé vào BookingProvider
-                    bookingProvider.addBooking(
-                      _selectedOrigin!,
-                      _selectedDestination!,
-                      _departureDateController.text,
+                    // Cập nhật thông tin đặt vé
+                    Provider.of<BookingProvider>(context, listen: false)
+                        .updateBooking(
+                      widget.index,
+                      _selectedOrigin,
+                      _selectedDestination,
+                      _dateController.text,
                       _passengers, // Thêm số lượng hành khách
                     );
 
                     // Hiển thị thông báo thành công
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Đặt vé thành công!')),
+                      const SnackBar(content: Text('Cập nhật vé thành công!')),
                     );
 
                     // Quay lại màn hình trước đó
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Đặt vé'),
+                child: const Text('Cập nhật vé'),
               ),
             ),
           ],
