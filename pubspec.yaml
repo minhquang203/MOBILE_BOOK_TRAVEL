@@ -24,7 +24,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/bus_icon.png
+    - assets/images/backgroud.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

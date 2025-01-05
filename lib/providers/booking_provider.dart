@@ -15,12 +15,13 @@ class BookingProvider with ChangeNotifier {
 
   List<Map<String, String>> get bookings => _bookings;
 
-  void addBooking(String origin, String destination, String date, int passengers) {
+  void addBooking(
+      String origin, String destination, String date, int passengers) {
     _bookings.add({
       'origin': origin,
       'destination': destination,
       'date': date,
-      'passengers': passengers.toString(), // Thêm số lượng hành khách
+      'passengers': passengers.toString(),
     });
     notifyListeners();
   }
@@ -30,12 +31,13 @@ class BookingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateBooking(int index, String origin, String destination, String date, int passengers) {
+  void updateBooking(int index, String origin, String destination, String date,
+      int passengers) {
     _bookings[index] = {
       'origin': origin,
       'destination': destination,
       'date': date,
-      'passengers': passengers.toString(), // Cập nhật số lượng hành khách
+      'passengers': passengers.toString(),
     };
     notifyListeners();
   }
